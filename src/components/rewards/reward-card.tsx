@@ -56,9 +56,9 @@ export function RewardCard({ reward, userPoints, onRedeem }: { reward: Reward, u
   const canAfford = userPoints >= reward.cost;
 
   return (
-    <Card className="flex flex-col overflow-hidden border shadow-sm transition-all hover:border-slate-300 hover:shadow-md">
-      <div className={`h-20 ${reward.color} flex items-center justify-center border-b border-slate-100`}>
-        <Icon className="w-8 h-8 text-slate-600" />
+    <Card className="flex flex-col overflow-hidden border border-zinc-200 shadow-sm transition-all duration-200 hover:border-zinc-300 hover:shadow-md hover:-translate-y-[2px]">
+      <div className={`h-20 ${reward.color} flex items-center justify-center border-b border-zinc-100`}>
+        <Icon className="w-8 h-8 text-zinc-600" />
       </div>
       <CardHeader>
         <div className="flex justify-between items-start mb-1">
@@ -74,7 +74,7 @@ export function RewardCard({ reward, userPoints, onRedeem }: { reward: Reward, u
       </CardContent>
       <CardFooter className="pt-0">
         <Button 
-          className="w-full" 
+          className="w-full active:scale-[0.98] transition-transform" 
           variant={canAfford ? "default" : "secondary"}
           disabled={!canAfford}
           onClick={() => onRedeem(reward.id)}

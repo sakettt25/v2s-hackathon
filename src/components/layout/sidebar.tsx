@@ -112,7 +112,7 @@ export function Sidebar() {
                   <Link
                     href={item.href}
                     title={isCompact ? item.label : undefined}
-                    className={`relative flex items-center gap-3 rounded-md py-2.5 outline-none group ${isCompact ? "px-0 justify-center" : "px-3"}`}
+                    className={`relative flex items-center gap-3 rounded-md py-2.5 outline-none group active:scale-[0.98] transition-transform ${isCompact ? "px-0 justify-center" : "px-3"}`}
                   >
                     {isActive && (
                       <motion.div
@@ -160,7 +160,7 @@ export function Sidebar() {
         <form action={logout}>
           <Button 
             variant="ghost" 
-            className={`w-full text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all rounded-md ${isCompact ? "justify-center px-0" : "justify-start gap-2"}`}
+            className={`w-full text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all rounded-md active:scale-[0.98] ${isCompact ? "justify-center px-0" : "justify-start gap-2"}`}
             title={isCompact ? "Logout" : undefined}
           >
             <LogOut className="h-4 w-4 flex-shrink-0" />

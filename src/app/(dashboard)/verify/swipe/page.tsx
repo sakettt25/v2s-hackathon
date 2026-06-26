@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SwipeCard } from "@/components/verify/swipe-card";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Trophy, CheckCircle2 } from "lucide-react";
 import { submitVerification } from "../actions";
@@ -142,14 +142,23 @@ export default function SwipeVerifyPage() {
           </div>
         ) : issues.length > 0 ? (
           <div className="relative w-full max-w-sm min-h-[500px] flex items-center justify-center">
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {/* Render in reverse so the first item is on top */}
               {issues.slice().reverse().map((issue, index) => (
-                <SwipeCard 
-                  key={issue.id} 
-                  issue={issue} 
-                  onSwipe={handleSwipe} 
-                />
+                <motion.div
+                  key={issue.id}
+                  layout
+                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] as any }}
+                  className="absolute"
+                >
+                  <SwipeCard 
+                    issue={issue} 
+                    onSwipe={handleSwipe} 
+                  />
+                </motion.div>
               ))}
             </AnimatePresence>
           </div>
