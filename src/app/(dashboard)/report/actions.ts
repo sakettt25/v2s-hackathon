@@ -90,7 +90,7 @@ export async function submitIssueAction(payload: {
   const { data, error } = await supabase
     .from("issues")
     .insert({
-      user_id: session.user.id,
+      reporter_id: session.user.id,
       title: payload.title,
       description: payload.description,
       category: payload.category,
