@@ -18,7 +18,7 @@ function HeatmapOverlay({ issues, active }: { issues: any[], active: boolean }) 
       // @ts-ignore
       const heatmapData = issues.map(issue => new google.maps.LatLng(issue.lat, issue.lng));
       
-      const layer = new visualization.HeatmapLayer({
+      const layer = new (visualization as any).HeatmapLayer({
         data: heatmapData,
         radius: 40,
         opacity: 0.7,

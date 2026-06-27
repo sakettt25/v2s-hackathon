@@ -111,7 +111,7 @@ export async function POST(req: Request) {
 
     // 3. Generate PDF
     const stream = await renderToStream(<ComplaintPDF complaint={complaintData} issue={issue} />);
-    const chunks = [];
+    const chunks: any[] = [];
     for await (const chunk of stream) {
       chunks.push(chunk);
     }

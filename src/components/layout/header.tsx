@@ -47,7 +47,7 @@ export function Header({ userEmail = "demo.user@communityhero.in", userRole = "c
     }
   };
 
-  const dropdownVariants = {
+  const dropdownVariants: any = {
     hidden: { opacity: 0, y: 10, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 25 } },
     exit: { opacity: 0, y: 5, scale: 0.95, transition: { duration: 0.15 } }

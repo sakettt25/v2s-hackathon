@@ -25,7 +25,7 @@ function PredictiveHeatmapOverlay({ data = [] }: { data: any[] }) {
       
     if (!heatmap) {
       // @ts-ignore
-      const layer = new visualization.HeatmapLayer({
+      const layer = new (visualization as any).HeatmapLayer({
         data: heatmapData,
         radius: 60,
         opacity: 0.8,

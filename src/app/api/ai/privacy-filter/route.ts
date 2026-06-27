@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     const boundingBoxes = JSON.parse(aiResponse.text || "[]");
     
     // 2. Process image with sharp to apply blur
-    let finalImageBuffer = buffer;
+    let finalImageBuffer: any = buffer;
     
     if (boundingBoxes.length > 0) {
       const metadata = await sharp(buffer).metadata();

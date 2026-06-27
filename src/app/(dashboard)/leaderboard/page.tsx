@@ -61,7 +61,7 @@ export default async function LeaderboardPage() {
                 </div>
                 <CardTitle className="text-lg flex items-center justify-center gap-2">
                   {user.full_name}
-                  {user.role === "official" && <ShieldCheck className="h-4 w-4 text-blue-500" title="Official" />}
+                  {user.role === "official" && <span title="Official"><ShieldCheck className="h-4 w-4 text-blue-500" /></span>}
                 </CardTitle>
                 <CardDescription>
                   {index === 0 ? <span className="text-amber-600 font-semibold flex items-center justify-center gap-1"><Trophy className="h-3 w-3"/> Rank #1</span> : `Rank #${index + 1}`}
