@@ -105,8 +105,8 @@ export async function submitIssueAction(payload: {
     .single();
 
   if (error) {
-    console.error("Insert Error:", error);
-    return { success: false, error: "Failed to submit issue." };
+    console.error("Insert Error:", JSON.stringify(error));
+    return { success: false, error: `Failed to submit issue: ${error.message || error.code || "Unknown DB error"}` };
   }
 
   revalidatePath("/dashboard");

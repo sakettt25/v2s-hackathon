@@ -1,44 +1,62 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { APIProvider, Map, AdvancedMarker, Pin, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, AdvancedMarker, Pin, useMap } from "@vis.gl/react-google-maps";
 import { DEFAULT_CENTER, DEFAULT_ZOOM, ISSUE_STATUSES } from "@/lib/constants";
 import { Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-function HeatmapOverlay({ issues, active }: { issues: any[], active: boolean }) {
+// Replaces deprecated HeatmapLayer with Google Maps Circle overlays
+function CircleHeatmapOverlay({ issues, active }: { issues: any[], active: boolean }) {
   const map = useMap();
-  const visualization = useMapsLibrary('visualization');
-  const [heatmap, setHeatmap] = useState<any>(null);
+  const [circles, setCircles] = useState<google.maps.Circle[]>([]);
 
   useEffect(() => {
-    if (!map || !visualization) return;
+    if (!map || !active) {
+      // Remove circles when inactive
+      circles.forEach(c => c.setMap(null));
+      return;
+    }
 
-    if (!heatmap) {
-      // @ts-ignore
-      const heatmapData = issues.map(issue => new google.maps.LatLng(issue.lat, issue.lng));
-      
-      const layer = new (visualization as any).HeatmapLayer({
-        data: heatmapData,
-        radius: 40,
-        opacity: 0.7,
-        gradient: [
-          'rgba(255, 255, 255, 0)',
-          'rgba(255, 237, 74, 0.5)',
-          'rgba(255, 179, 71, 0.8)',
-          'rgba(255, 105, 97, 1)',
-          'rgba(255, 0, 0, 1)'
-        ]
+    if (circles.length > 0) {
+      circles.forEach(c => c.setMap(map));
+      return;
+    }
+
+    // Create circle overlays for each issue
+    const newCircles = issues
+      .filter(issue => issue.lat && issue.lng)
+      .map(issue => {
+        const severity = issue.severity_score || 5;
+        const opacity = Math.min(0.15 + severity * 0.05, 0.6);
+        const radius = 80 + severity * 30;
+
+        return new google.maps.Circle({
+          center: { lat: issue.lat, lng: issue.lng },
+          radius,
+          fillColor: severity >= 7 ? "#ef4444" : severity >= 4 ? "#f97316" : "#eab308",
+          fillOpacity: opacity,
+          strokeColor: severity >= 7 ? "#dc2626" : severity >= 4 ? "#ea580c" : "#ca8a04",
+          strokeWeight: 1,
+          strokeOpacity: 0.3,
+          map,
+          clickable: false,
+        });
       });
-      setHeatmap(layer);
-    }
-  }, [map, visualization, issues, heatmap]);
 
+    setCircles(newCircles);
+
+    return () => {
+      newCircles.forEach(c => c.setMap(null));
+    };
+  }, [map, active, issues]);
+
+  // Cleanup on unmount
   useEffect(() => {
-    if (heatmap) {
-      heatmap.setMap(active ? map : null);
-    }
-  }, [heatmap, active, map]);
+    return () => {
+      circles.forEach(c => c.setMap(null));
+    };
+  }, []);
 
   return null;
 }
@@ -93,7 +111,7 @@ export default function MapView({ initialIssues = [] }: { initialIssues?: any[] 
             </AdvancedMarker>
           );
         })}
-        <HeatmapOverlay issues={initialIssues} active={showHeatmap} />
+        <CircleHeatmapOverlay issues={initialIssues} active={showHeatmap} />
       </Map>
 
       <div className="absolute top-4 right-4 z-10 bg-background/90 backdrop-blur rounded-md shadow-sm border p-2">

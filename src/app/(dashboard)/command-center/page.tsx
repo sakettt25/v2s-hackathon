@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { APIProvider, Map, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, BrainCircuit, Activity, ShieldAlert, CloudRain, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -10,48 +10,51 @@ const DEFAULT_CENTER = { lat: 28.6139, lng: 77.2090 }; // Delhi
 
 function PredictiveHeatmapOverlay({ data = [] }: { data: any[] }) {
   const map = useMap();
-  const visualization = useMapsLibrary('visualization');
-  const [heatmap, setHeatmap] = useState<any>(null);
+  const [circles, setCircles] = useState<google.maps.Circle[]>([]);
 
   useEffect(() => {
-    if (!map || !visualization || data.length === 0) return;
+    if (!map || data.length === 0) return;
 
-    const heatmapData = data
+    // Clear old circles
+    circles.forEach(c => c.setMap(null));
+
+    const newCircles = data
       .filter(spot => spot.lat && spot.lng)
-      .map(spot => ({
-        location: new google.maps.LatLng(spot.lat, spot.lng),
-        weight: spot.severity_score || 5
-      }));
-      
-    if (!heatmap) {
-      // @ts-ignore
-      const layer = new (visualization as any).HeatmapLayer({
-        data: heatmapData,
-        radius: 60,
-        opacity: 0.8,
-        gradient: [
-          'rgba(255, 255, 255, 0)',
-          'rgba(173, 216, 230, 0.5)',
-          'rgba(0, 0, 255, 0.8)',
-          'rgba(138, 43, 226, 1)',
-          'rgba(255, 0, 255, 1)',
-          'rgba(255, 0, 0, 1)' 
-        ]
+      .map(spot => {
+        const severity = spot.severity_score || 5;
+        const opacity = Math.min(0.15 + severity * 0.06, 0.65);
+        const radius = 100 + severity * 40;
+
+        // Blue-to-red gradient based on severity
+        let fillColor = "#3b82f6"; // blue
+        let strokeColor = "#2563eb";
+        if (severity >= 7) { fillColor = "#ef4444"; strokeColor = "#dc2626"; }
+        else if (severity >= 5) { fillColor = "#a855f7"; strokeColor = "#9333ea"; }
+        else if (severity >= 3) { fillColor = "#6366f1"; strokeColor = "#4f46e5"; }
+
+        return new google.maps.Circle({
+          center: { lat: spot.lat, lng: spot.lng },
+          radius,
+          fillColor,
+          fillOpacity: opacity,
+          strokeColor,
+          strokeWeight: 1,
+          strokeOpacity: 0.3,
+          map,
+          clickable: false,
+        });
       });
-      setHeatmap(layer);
-    } else {
-      heatmap.setData(heatmapData);
-    }
-  }, [map, visualization, heatmap, data]);
+
+    setCircles(newCircles);
+
+    return () => {
+      newCircles.forEach(c => c.setMap(null));
+    };
+  }, [map, data]);
 
   useEffect(() => {
-    if (heatmap) {
-      heatmap.setMap(map);
-    }
-    return () => {
-      if (heatmap) heatmap.setMap(null);
-    }
-  }, [heatmap, map]);
+    return () => { circles.forEach(c => c.setMap(null)); };
+  }, []);
 
   return null;
 }
