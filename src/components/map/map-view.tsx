@@ -44,7 +44,7 @@ function HeatmapOverlay({ issues, active }: { issues: any[], active: boolean }) 
 }
 
 export default function MapView({ initialIssues = [] }: { initialIssues?: any[] }) {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyCuZjnUGl4w72ZSnfTetD_HHxbZFmOxit4";
   const [showHeatmap, setShowHeatmap] = useState(false);
 
   if (!apiKey) {

@@ -82,7 +82,7 @@ export async function submitVerification(issueId: string, status: VerificationSt
         });
         
         // You would call your API route here asynchronously:
-        // fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/ai/generate-complaint`, { ... })
+        // fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://v2s-hackathon-169783553719.asia-south2.run.app"}/api/ai/generate-complaint`, { ... })
       }
     }
 

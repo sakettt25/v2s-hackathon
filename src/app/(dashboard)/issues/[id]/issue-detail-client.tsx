@@ -324,7 +324,7 @@ export default function IssueDetailClient({ issue, verificationCount, hasVerifie
               transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.3 }}
               className="h-64 rounded-xl overflow-hidden shadow-sm border"
             >
-              <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""} version="3.64">
+              <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyCuZjnUGl4w72ZSnfTetD_HHxbZFmOxit4"} version="3.64">
                 <Map defaultCenter={{lat: issue.lat, lng: issue.lng}} defaultZoom={16} disableDefaultUI={true} mapId="DEMO_MAP_ID_MINI">
                   <AdvancedMarker position={{lat: issue.lat, lng: issue.lng}}>
                     <Pin background="#e11d48" borderColor="#be123c" glyphColor="#fff" />

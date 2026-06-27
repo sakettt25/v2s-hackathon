@@ -86,7 +86,7 @@ export async function upvoteIssueAction(issueId: string) {
 
 export async function generateResolutionPlanAction(issueId: string, _description?: string, _category?: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://v2s-hackathon-169783553719.asia-south2.run.app";
     const res = await fetch(`${baseUrl}/api/ai/resolution-plan`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

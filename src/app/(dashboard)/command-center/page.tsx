@@ -57,7 +57,7 @@ function PredictiveHeatmapOverlay({ data = [] }: { data: any[] }) {
 }
 
 export default function CommandCenterPage() {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyCuZjnUGl4w72ZSnfTetD_HHxbZFmOxit4";
   const [liveIssues, setLiveIssues] = useState<any[]>([]);
   const [aiData, setAiData] = useState<any>(null);
   const [loadingAi, setLoadingAi] = useState(true);

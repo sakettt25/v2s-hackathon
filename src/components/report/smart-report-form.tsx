@@ -346,7 +346,7 @@ export default function SmartReportForm() {
                 </div>
               )}
               <div className="flex-1 relative bg-slate-100 min-h-[300px] w-full">
-                <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""} version="3.64">
+                <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyCuZjnUGl4w72ZSnfTetD_HHxbZFmOxit4"} version="3.64">
                   <Map 
                     defaultCenter={{lat: formData.lat, lng: formData.lng}} 
                     defaultZoom={16}
