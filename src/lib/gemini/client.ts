@@ -1,10 +1,15 @@
 import { GoogleGenAI } from "@google/genai";
 
-if (!process.env.GEMINI_API_KEY) {
-  console.warn("GEMINI_API_KEY is not set. AI features will be unavailable.");
-}
-
-export const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+let _ai: GoogleGenAI | null = null;
+export const ai = new Proxy({} as GoogleGenAI, {
+  get: (target, prop) => {
+    if (!_ai) {
+      if (!process.env.GEMINI_API_KEY) console.warn("GEMINI_API_KEY is not set.");
+      _ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "dummy_key" });
+    }
+    return (_ai as any)[prop];
+  }
+});
 
 export const MODELS = {
   flash: "gemini-2.0-flash",

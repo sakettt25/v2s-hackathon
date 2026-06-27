@@ -1,6 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+let _genAI: GoogleGenerativeAI | null = null;
+const getGenAI = () => {
+  if (!_genAI) {
+    if (!process.env.GEMINI_API_KEY) {
+      console.warn("GEMINI_API_KEY is missing. AI features will fail.");
+    }
+    _genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
+  }
+  return _genAI;
+};
 
 export async function analyzeIssueImage(base64Image: string) {
   if (!process.env.GEMINI_API_KEY) {
@@ -10,7 +19,7 @@ export async function analyzeIssueImage(base64Image: string) {
   // Remove the data URL prefix if present (e.g., "data:image/jpeg;base64,")
   const base64Data = base64Image.split(",")[1] || base64Image;
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = getGenAI().getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `
     You are an expert civic infrastructure AI. Analyze this image of a community issue.
