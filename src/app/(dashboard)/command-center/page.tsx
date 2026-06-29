@@ -142,17 +142,29 @@ export default function CommandCenterPage() {
                   <div className="flex items-center justify-center p-4"><Loader2 className="w-4 h-4 animate-spin text-slate-400" /></div>
                 ) : aiData?.environmental_factors ? (
                   <div className="space-y-4">
-                    {aiData.environmental_factors.map((factor: any, i: number) => (
-                      <div key={i}>
-                        <div className="flex justify-between text-xs mb-1 text-slate-600 uppercase font-semibold tracking-wider">
-                          <span>{factor.name}</span>
-                          <span className="text-slate-900">{factor.risk_percentage}%</span>
+                    {aiData.environmental_factors.map((factor: any, i: number) => {
+                      const colorMap: Record<string, string> = {
+                        blue: "bg-blue-600",
+                        slate: "bg-slate-600",
+                        red: "bg-red-600",
+                        yellow: "bg-yellow-500",
+                        amber: "bg-amber-600",
+                        green: "bg-emerald-600",
+                      };
+                      const barColor = colorMap[factor.color] || "bg-slate-600";
+                      
+                      return (
+                        <div key={i}>
+                          <div className="flex justify-between text-xs mb-1 text-slate-600 uppercase font-semibold tracking-wider">
+                            <span>{factor.name}</span>
+                            <span className="text-slate-900">{factor.risk_percentage}%</span>
+                          </div>
+                          <div className="w-full h-1.5 bg-slate-200 rounded-none overflow-hidden">
+                            <div className={`h-full ${barColor}`} style={{ width: `${Math.max(0, Math.min(100, factor.risk_percentage))}%` }} />
+                          </div>
                         </div>
-                        <div className="w-full h-1.5 bg-slate-100 rounded-none overflow-hidden">
-                          <div className={`h-full bg-${factor.color || 'slate'}-800`} style={{ width: `${factor.risk_percentage}%` }} />
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-xs text-slate-500">Could not load environmental data.</p>

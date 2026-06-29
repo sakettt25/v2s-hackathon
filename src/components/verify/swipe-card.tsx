@@ -45,7 +45,7 @@ export function SwipeCard({ issue, onSwipe }: SwipeCardProps) {
       onDragEnd={handleDragEnd}
       animate={{ x: exitX }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="absolute w-full max-w-sm cursor-grab active:cursor-grabbing"
+      className="w-full max-w-sm cursor-grab active:cursor-grabbing"
     >
       <Card className="overflow-hidden border border-slate-200 shadow-sm bg-card rounded-lg">
         {issue.imageUrl ? (

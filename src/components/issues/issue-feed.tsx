@@ -60,11 +60,11 @@ export default function IssueFeed({ initialIssues = [] }: { initialIssues?: any[
                     )}
                   </div>
                   <CardDescription className="flex flex-col gap-1 text-xs mt-1">
-                    <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-2">
                       <span className="font-medium text-zinc-900">{issue.profiles?.full_name || "Anonymous"}</span>
                       <span className="text-zinc-400">•</span>
                       <span className="text-zinc-500">{formatRelativeTime(issue.created_at)}</span>
-                    </div>
+                    </span>
                     {issue.formatted_address && (
                       <span className="text-zinc-500 flex items-center gap-1 mt-0.5">
                         <MapPin className="h-3 w-3" />

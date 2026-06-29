@@ -5,7 +5,8 @@ import IssueDetailClient from "./issue-detail-client";
 
 export const dynamic = "force-dynamic";
 
-export default async function IssueDetailPage({ params }: { params: { id: string } }) {
+export default async function IssueDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
   const session = await getSession();
   const supabase = await createClient();
 
@@ -13,7 +14,7 @@ export default async function IssueDetailPage({ params }: { params: { id: string
   const { data: issue, error } = await supabase
     .from("issues")
     .select("*, profiles(full_name, role)")
-    .eq("id", params.id)
+    .eq("id", resolvedParams.id)
     .single();
 
   if (error || !issue) {
@@ -24,7 +25,7 @@ export default async function IssueDetailPage({ params }: { params: { id: string
   const { count: verificationCount } = await supabase
     .from("verifications")
     .select("*", { count: "exact", head: true })
-    .eq("issue_id", params.id)
+    .eq("issue_id", resolvedParams.id)
     .eq("status", "valid");
 
   // Check if current user has already verified
@@ -33,7 +34,7 @@ export default async function IssueDetailPage({ params }: { params: { id: string
     const { data: existing } = await supabase
       .from("verifications")
       .select("id")
-      .eq("issue_id", params.id)
+      .eq("issue_id", resolvedParams.id)
       .eq("user_id", session.user.id)
       .single();
     if (existing) hasVerified = true;

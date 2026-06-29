@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Trophy, CheckCircle2 } from "lucide-react";
 import { submitVerification } from "../actions";
+import { getUserProfile } from "@/app/(dashboard)/actions";
 
 const useToast = () => ({
   toast: (options: any) => alert(`${options.title}\n${options.description || ""}`)
@@ -64,25 +65,16 @@ export default function SwipeVerifyPage() {
           .order('created_at', { ascending: false })
           .limit(10);
         
-        if (data && data.length > 0) {
-          const formattedIssues = data.map(issue => ({
-            id: issue.id,
-            title: issue.title,
-            category: issue.category,
-            severity: issue.severity_score || 5,
-            location: issue.formatted_address || "Location unavailable",
-            imageUrl: issue.image_url || null,
-          }));
-          setIssues(formattedIssues);
-        } else {
-          // Fallback to mock data if DB is empty so the demo still works
-          setIssues(MOCK_ISSUES);
-        }
+        // Force mock data as requested
+        setIssues(MOCK_ISSUES);
 
         // Fetch dynamic score
-        const { getUserProfile } = await import("@/app/(dashboard)/actions");
-        const profile = await getUserProfile();
-        setScore(profile.points);
+        try {
+          const profile = await getUserProfile();
+          if (profile) setScore(profile.points || 0);
+        } catch (e) {
+          console.error("Failed to load profile", e);
+        }
 
       } catch (err) {
         console.error("Failed to load issues", err);
@@ -142,22 +134,24 @@ export default function SwipeVerifyPage() {
           </div>
         ) : issues.length > 0 ? (
           <div className="relative w-full max-w-sm min-h-[500px] flex items-center justify-center">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence>
               {/* Render in reverse so the first item is on top */}
               {issues.slice().reverse().map((issue, index) => (
                 <motion.div
                   key={issue.id}
                   layout
-                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                  initial={false}
                   animate={{ scale: 1, opacity: 1, y: 0 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] as any }}
-                  className="absolute"
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
                 >
-                  <SwipeCard 
-                    issue={issue} 
-                    onSwipe={handleSwipe} 
-                  />
+                  <div className="pointer-events-auto w-full flex justify-center">
+                    <SwipeCard 
+                      issue={issue} 
+                      onSwipe={handleSwipe} 
+                    />
+                  </div>
                 </motion.div>
               ))}
             </AnimatePresence>
